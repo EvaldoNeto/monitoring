@@ -29,15 +29,15 @@ class Df():
 about it. It skips the first line, as it is contains only the headers
 and skips all partitions that contains loop in its name.
 """
-def get_data():
-    sp = subprocess.check_output(["df", "-h"])
+def get_data(fs_type):
+    sp = subprocess.check_output(["df", "-h", "-t", fs_type])
     sp = sp.splitlines()
-    x = []
+    disk_info = []
     for aux in sp:
         temp = str(aux, 'utf-8')
         temp = " ".join(temp.split())
         temp = temp.split(" ")
-        if temp[0] != "Filesystem" and temp[0].find("loop") == -1:
-            x.append(Df(temp[0], temp[1], temp[4], temp[5]))
-    return x
+        if temp[0] != "Filesystem":
+            disk_info.append(Df(temp[0], temp[1], temp[4], temp[5]))
+    return disk_info
         
