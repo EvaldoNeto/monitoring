@@ -5,6 +5,25 @@ class Find():
         self.size = size
         self.path = path
 
+"""Find all files from the path but the one specified, for more information
+see man find. 
+The return value is a list with the file names that were found
+"""
+def all_but(path, file_name, max_depth=""):
+    cmd = ""
+    if max_depth != "":
+        cmd = "find " + path + " -maxdepth " + str(max_depth) + " -type f ! -name " + file_name
+    else:
+        cmd = "find " + path + " -type f -name " + file_name
+    try:
+        sp = str(subprocess.check_output(cmd.split(" ")), 'UTF-8')
+        sp = sp.splitlines()
+        return sp
+    except subprocess.CalledProcessError as e:
+        #@TODO HANDLE ERROR
+        print(e)
+
+
 """Still gotta fix this function, it looks like the pipe is messing up
 with the size displayed. Because of that the final order is wrong
 """
@@ -21,4 +40,3 @@ def get_data(path, n_files):
         temp = str(info, 'utf-8')
         print(temp)
     #    return output
-    

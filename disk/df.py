@@ -9,12 +9,21 @@ class Df():
         self.p_use = p_use
         self.mounted_on = mounted_on
 
-    def update(self, df_obj):
-        self.file_system = df_obj.file_system
-        self.size = df_obj.size
-        self.p_use = df_obj.p_use
-        self.mounted_on = df_obj.mounted_on
-
+    def update(self):
+        sp = ""
+        cmd = "df -h " + self.file_system
+        try:
+            sp = subprocess.check_output(cmd.split(" "))
+        except subprocess.CalledProcessError as e:
+            print(e)
+        sp = str(sp, 'utf-8')
+        sp = sp.splitlines()
+        temp = " ".join(sp[1].split())
+        temp = temp.split(" ")
+        self.size = temp[1]
+        self.p_use = temp[4]
+        self.mounted_on = temp[5]
+        
     def print_df(self):
         print(self.file_system + " " + self.size + " " + self.p_use + " " + self.mounted_on)
 
@@ -32,7 +41,10 @@ and skips all partitions that contains loop in its name.
 def get_data(fs_type=""):
     sp = ""
     if fs_type == "":
-        sp = subprocess.check_output(["df", "-h"])
+        try:
+            sp = subprocess.check_output(["df", "-h"])
+        except subprocess.CalledProcessError as e:
+            print (e)
     else:
         try:
             sp = subprocess.check_output(["df", "-h", "-t", fs_type])
@@ -49,4 +61,3 @@ def get_data(fs_type=""):
         if temp[0] != "Filesystem":
             disk_info.append(Df(temp[0], temp[1], temp[4], temp[5]))
     return disk_info
-        

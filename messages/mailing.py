@@ -1,6 +1,9 @@
 import smtplib
 
-"""This file contains functions and classes for sending emails
+"""This file contains functions and classes for sending emails, these two sites were used as refference
+https://www.pythonforbeginners.com/code-snippets-source-code/using-python-to-send-email/
+
+https://docs.python.org/2/library/email-examples.html
 """
 
 """Class to store data for the mail provider which will be responsible,
