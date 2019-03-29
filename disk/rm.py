@@ -1,4 +1,5 @@
 import subprocess
+import logs.mon_log as mlog
 
 """This file contain functions to remove files based om the rm function from unix
 like systems. For more information see the manual, man rm
@@ -11,14 +12,12 @@ def all_but(path, file_name):
     try:
         sp = subprocess.check_output(cmd.split(" "))
     except subprocess.CalledProcessError as e:
-        #@TODO HANDLE ERROR
-        print(e)
+        mlog.monLog.exception(e, __name__)
 
 def single_file(path, file_name):
     cmd = "rm " + path + "/" + file_name
     try:
         sp = subprocess.check_output(cmd.split(" "))
     except subprocess.CalledProcessError as e:
-        print(e)
-        # @TODO HANDLE ERROR
+        mlog.monLog.exception(e, __name__)
     

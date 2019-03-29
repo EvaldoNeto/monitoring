@@ -1,4 +1,5 @@
 import subprocess
+import logs.mon_log as mlog
 
 """A class to store the main values found in df -h command.
 """
@@ -15,7 +16,7 @@ class Df():
         try:
             sp = subprocess.check_output(cmd.split(" "))
         except subprocess.CalledProcessError as e:
-            print(e)
+            mlog.monLog.exception(msg, __name__)
         sp = str(sp, 'utf-8')
         sp = sp.splitlines()
         temp = " ".join(sp[1].split())
@@ -30,7 +31,7 @@ class Df():
     def is_inside_limit(self, limit):
         p_use = float(self.p_use[0 : len(self.p_use) - 1])
         if p_use > limit:
-            print("Disk " + self.file_system + " outside limit, usage " + str(self.p_use))
+            mlog.monLog.warning("Disk " + self.file_system + " outside limit, usage " + str(self.p_use), __name__)
             return False
         return True
 
@@ -44,14 +45,12 @@ def get_data(fs_type=""):
         try:
             sp = subprocess.check_output(["df", "-h"])
         except subprocess.CalledProcessError as e:
-            print (e)
+            mlog.monLog.exception(e, __name__)
     else:
         try:
             sp = subprocess.check_output(["df", "-h", "-t", fs_type])
         except subprocess.CalledProcessError as e:
-            print(e)
-            # TO DO
-            # HANDLE ERROR
+            mlog.monLog.exception(e, __name__)
     sp = sp.splitlines()
     disk_info = []
     for aux in sp:
