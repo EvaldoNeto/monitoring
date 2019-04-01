@@ -35,9 +35,18 @@ ExecStart=/usr/bin/python3 /path/to/application/main/file
 WantedBy=multi-user.target
 ```
 
-After that just run systemctl start monitoring.service to start the service
+After that just run 
 
-To enable the service to automaticaly run when the machine start run systemctl enable monitorin.service
+```
+systemctl start monitoring.service 
+```
+to start the service
+
+To enable the service to automaticaly run when the machine start run 
+
+```
+systemctl enable monitoring.service
+```
 
 For some more basic information on Linux services see:
 https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6
