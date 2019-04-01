@@ -14,6 +14,8 @@ def all_but(path, file_name):
     except subprocess.CalledProcessError as e:
         mlog.monLog.exception(e, __name__)
 
+"""Remove the file with the given name in the given path
+"""
 def single_file(path, file_name):
     cmd = "rm " + path + "/" + file_name
     try:

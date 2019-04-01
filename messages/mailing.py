@@ -1,5 +1,5 @@
 import smtplib
-
+import logs.mon_log as mlog
 """This file contains functions and classes for sending emails, these two sites were used as refference
 https://www.pythonforbeginners.com/code-snippets-source-code/using-python-to-send-email/
 
@@ -33,8 +33,13 @@ class Mail():
         header += 'Subject: %s\n'%self.subject
         msg = header + "\n" + self.message
 
-        server = smtplib.SMTP(self.provider.smtp_server + ":587")
-        server.starttls()
-        server.login(self.provider.login, self.provider.password)
-        server.sendmail(self.provider.login, self.to_addr_lst, msg)
-        server.quit()
+        try:
+            server = smtplib.SMTP(self.provider.smtp_server + ":587")
+            server.starttls()
+            server.login(self.provider.login, self.provider.password)
+            server.sendmail(self.provider.login, self.to_addr_lst, msg)
+            server.quit()
+        except smtplib.SMTPException as e:
+            mlog.monLog.warning("Could not send email", __name__)
+            mlog.monLog.exception(e, __name__)
+            

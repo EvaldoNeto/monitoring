@@ -15,10 +15,24 @@ def all_but(path, file_name, max_depth=""):
     if max_depth != "":
         cmd = "find " + path + " -maxdepth " + str(max_depth) + " -type f ! -name " + file_name
     else:
-        cmd = "find " + path + " -type f -name " + file_name
+        cmd = "find " + path + " -type f ! -name " + file_name
     try:
         sp = str(subprocess.check_output(cmd.split(" ")), 'UTF-8')
         sp = sp.splitlines()
         return sp
     except subprocess.CalledProcessError as e:
-        mlog.monLog.exception(msg, __name__)
+        mlog.monLog.exception(e, __name__)
+
+"""Find files in a directory with the given name
+"""
+def m_file(path, file_name, max_depth=""):
+    cmd = ""
+    if max_depth != "":
+        cmd = "find " + path + " -maxdepth " + str(max_depth) + " -type f -name " + file_name
+    else:
+        cmd = "find " + path + " -type f -name " + file_name
+    try:
+        sp = str(subprocess.check_output(cmd.split(" ")), 'UTF-8')
+        return sp.splitlines()
+    except subprocess.CalledProcessError as e:
+        mlog.monLog.exception(e, __name__)
