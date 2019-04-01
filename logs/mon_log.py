@@ -1,4 +1,5 @@
 import logging
+import config
 
 """A simple class to format the logs, still needs improvement
 """
