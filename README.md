@@ -17,6 +17,7 @@ Just clone the repo to a folde, cd to it and run "python3 main.py"
 
 Create a file named monitoring.service under the folder /etc/systemd/system contaning the content bellow:
 
+```
 [Unit]
 Description=Monitoring host status
 After=network.target
@@ -32,7 +33,7 @@ ExecStart=/usr/bin/python3 /path/to/application/main/file
 
 [Install]
 WantedBy=multi-user.target
-
+```
 
 After that just run systemctl start monitoring.service to start the service
 
