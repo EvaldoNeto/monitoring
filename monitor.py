@@ -8,28 +8,22 @@ import logs.mon_log as mlog
 import domain.hostname as host
 import disk.mon_dir as mdir
 import os
+import unifi.prune_db as prune
 
 """This function monitor the disk space and when above the disk limit
-it deletes old log files
+it deletes old log files when it is a tomcat server, it prunes mongodb
+database when it is a unifi controller.
+tomcat is the default value because most of our servers have it
 """
-def disk_space(fs_type):
-    monitor_log_file()
+def disk_space(fs_type, service="tomcat"):
     while True:
+        monitor_log_file()
         disk_data = df.get_data(fs_type)
         for data in disk_data:
             if data.is_inside_limit(config.disk_limit):
                 mlog.monLog.warning("host: " + host.get_name() + "\nDisk " + data.file_system + " inside limit, usage " + str(data.p_use), __name__)
             else:
-                mlog.monLog.warning("Cleaning disk", __name__)
-                msg = "host: " + host.get_name() + "\n" + data.file_system + " used disk before remove: " + data.p_use +"\nfiles removed:\n"
-                files = find.all_but(config.tomcat_log_path, config.keep_file)
-                for f in files:
-                    msg += "-" + f + "\n"
-                rm.all_but(config.tomcat_log_path, config.keep_file)
-                data.update()
-                msg += "\n" + data.file_system + " used disk after remove: " + data.p_use
-                mlog.monLog.warning(msg, __name__)
-                sendEmail(msg)
+                cleaning_disk[service]()
         time.sleep(config.wait_time)
 
 def sendEmail(msg):
@@ -49,3 +43,33 @@ def monitor_log_file():
             msg = "Removing monitor log file"
             mlog.monLog.warning(msg, __name__)
             rm.single_file(config.log_path + "/" + config.log_folder, config.log_file)
+    else:
+        create_log_dir()
+
+"""Function used to remove log files from servers running tomcat
+"""
+def rm_log_files(data):
+    mlog.monLog.warning("Cleaning disk", __name__)
+    msg = "host: " + host.get_name() + "\n" + data.file_system + " used disk before remove: " + data.p_use +"\nfiles removed:\n"
+    files = find.all_but(config.tomcat_log_path, config.keep_file)
+    for f in files:
+        msg += "-" + f + "\n"
+        rm.all_but(config.tomcat_log_path, config.keep_file)
+        data.update()
+        msg += "\n" + data.file_system + " used disk after remove: " + data.p_use
+        mlog.monLog.warning(msg, __name__)
+#        sendEmail(msg)    
+
+"""Function to prune mongo db from servers running unifi controller
+"""
+def prune_db(data):
+    mlog.monLog.warning("Cleaning disk", __name__)
+    msg = "host: " + host.get_name() + "\n" + data.file_system + " used disk before prune database: " + data.p_use
+    prune.prune()
+    data.update()
+    msg += "\n" + data.file_system + " used disk after prune: " + data.p_use
+    mlog.monLog.warning(msg, __name__)
+
+cleaning_disk = {}
+cleaning_disk["tomcat"] = rm_log_files
+cleaning_disk["unifi"] = prune_db

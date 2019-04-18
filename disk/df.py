@@ -16,7 +16,7 @@ class Df():
         try:
             sp = subprocess.check_output(cmd.split(" "))
         except subprocess.CalledProcessError as e:
-            mlog.monLog.exception(msg, __name__)
+            mlog.monLog.exception(e, __name__)
         sp = str(sp, 'utf-8')
         sp = sp.splitlines()
         temp = " ".join(sp[1].split())
