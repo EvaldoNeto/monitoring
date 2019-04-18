@@ -23,7 +23,7 @@ def disk_space(fs_type, service="tomcat"):
             if data.is_inside_limit(config.disk_limit):
                 mlog.monLog.warning("host: " + host.get_name() + "\nDisk " + data.file_system + " inside limit, usage " + str(data.p_use), __name__)
             else:
-                cleaning_disk[service]()
+                cleaning_disk[service](data)
         time.sleep(config.wait_time)
 
 def sendEmail(msg):
