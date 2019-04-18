@@ -2,7 +2,7 @@ import logs.mon_log as mlog
 import subprocess
 
 def prune():
-    f = open("mongo_prune_js.js")
+    f = open("/var/lib/monitoring/unifi/mongo_prune_js.js")
     cmd = "mongo --port 27117"
     try:
         p1 = subprocess.Popen(cmd.split(" "), stdin=f, stdout=subprocess.PIPE)
