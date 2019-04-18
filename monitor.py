@@ -43,8 +43,6 @@ def monitor_log_file():
             msg = "Removing monitor log file"
             mlog.monLog.warning(msg, __name__)
             rm.single_file(config.log_path + "/" + config.log_folder, config.log_file)
-    else:
-        create_log_dir()
 
 """Function used to remove log files from servers running tomcat
 """
